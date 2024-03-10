@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: users_microservice
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongo:27017/user
+      RMQ_URI: amqp://rabbitmq:5672
+    depends_on:
+      - mongo
+      - rabbitmq
+
+  mongo:
+    container_name: mongo_db
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+
+  rabbitmq:
+    container_name: rabbitmq_server
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
